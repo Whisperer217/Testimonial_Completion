@@ -16,7 +16,7 @@ This framework emerged from thirteen years of unprocessed combat-medicine testim
 
 ## Interactive Dashboard
 
-**🚀 [Launch Dashboard](https://whisperer217.github.io/Testimonial_Completion/epistemic_shock_dashboard.html)** *(coming soon)*
+**🚀 [Launch Dashboard](https://whisperer217.github.io/Testimonial_Completion/epistemic_shock_dashboard.html)**
 
 ### Features
 
