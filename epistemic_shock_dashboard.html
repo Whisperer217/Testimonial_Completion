@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epistemic Shock Analytical Dashboard</title>
+    <style>
+        :root {
+            --bg-dark: #121826;
+            --panel-bg: #1e293b;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --accent-orange: #f59e0b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 { text-align: center; margin-bottom: 30px; color: var(--accent-blue); }
+        h2 { font-size: 1.2rem; border-bottom: 1px solid var(--text-secondary); padding-bottom: 10px; margin-top: 0; }
+        h3 { font-size: 1rem; color: var(--text-secondary); margin-bottom: 5px; }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .panel {
+            background-color: var(--panel-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #334155;
+        }
+
+        /* --- Algorithm Section Styles --- */
+        .formula-box {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 1px solid var(--accent-blue);
+        }
+
+        .input-group { margin-bottom: 15px; }
+        .input-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        input[type=range] { width: 100%; accent-color: var(--accent-blue); }
+        
+        .result-box {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        #esi-score-display { font-size: 3rem; font-weight: bold; display: block; }
+        #esi-status-display { font-size: 1.5rem; font-weight: bold; padding: 5px 15px; border-radius: 4px; }
+        .status-stable { color: var(--accent-green); background: rgba(16, 185, 129, 0.1); }
+        .status-strained { color: var(--accent-orange); background: rgba(245, 158, 11, 0.1); }
+        .status-shock { color: var(--accent-red); background: rgba(239, 68, 68, 0.1); }
+
+        /* --- Framework Checklist Styles --- */
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+        }
+        .check-icon {
+            width: 24px; height: 24px;
+            background: var(--accent-green);
+            color: white;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-right: 15px; font-weight: bold;
+        }
+        .check-details { flex-grow: 1; }
+        .check-label { font-weight: bold; display: block; }
+        .check-sub { font-size: 0.85rem; color: var(--text-secondary); }
+
+        /* --- Data Table Styles --- */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .data-table th, .data-table td {
+            text-align: left; padding: 12px; border-bottom: 1px solid #334155;
+        }
+        .data-table th { color: var(--text-secondary); font-size: 0.9rem; }
+        .score-cell { font-weight: bold; padding: 5px 10px; border-radius: 4px; text-align: center;}
+        .score-red { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
+        .score-green { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
+
+        /* --- Analogy Styles --- */
+        .analogy-container { display: flex; justify-content: space-between; margin-top: 20px; }
+        .analogy-column { width: 45%; }
+        .analogy-item {
+            background: rgba(255,255,255,0.05); padding: 10px; margin-bottom: 10px;
+            border-radius: 6px; text-align: center; position: relative;
+        }
+        .med-item { border-left: 3px solid var(--accent-red); }
+        .epi-item { border-right: 3px solid var(--accent-blue); }
+        .analogy-arrow {
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; color: var(--text-secondary);
+        }
+
+        /* --- Protocol Styles --- */
+        .flow-step {
+            padding: 15px; margin-bottom: 10px; background: #0f172a; border: 1px solid #334155;
+            border-radius: 6px; position: relative;
+        }
+        .flow-step::after {
+            content: '↓'; position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%);
+            color: var(--text-secondary); font-size: 1.2rem;
+        }
+        .flow-step:last-child::after { content: none; }
+        .flow-title { font-weight: bold; color: var(--accent-blue); display: block; margin-bottom: 5px;}
+        .flow-desc { font-size: 0.9rem; color: var(--text-secondary); }
+
+    </style>
+</head>
+<body>
+
+    <h1>DOC ANALYTICS: Epistemic Shock & Reciprocity Loop</h1>
+
+    <div class="dashboard-grid">
+        <div class="panel">
+            <h2>1. THE ALGORITHM: ESI Calculator</h2>
+            <div class="formula-box">
+                ESI = (1 - Integrity) × (1 - ACC) × (1 + Instability)
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">Adjust sliders to model shock risk. Notice how high Accountability (ACC) dampens shock even if Integrity fails.</p>
+            
+            <div class="input-group">
+                <div class="input-header">
+                    <span>Integrity Index (Ī)</span>
+                    <span id="val-integrity">0.50</span>
+                </div>
+                <input type="range" id="in-integrity" min="0" max="1" step="0.05" value="0.50">
+                <h3>Facts, Consistency, Alignment. (Target > 0.70)</h3>
+            </div>
+
+            <div class="input-group">
+                <div class="input-header">
+                    <span>Accountability (ACC)</span>
+                    <span id="val-acc">0.70</span>
+                </div>
+                <input type="range" id="in-acc" min="0" max="1" step="0.1" value="0.70">
+                 <h3>Chain of Custody completeness. (Target > 0.90)</h3>
+            </div>
+
+            <div class="input-group">
+                <div class="input-header">
+                    <span>Instability Factor</span>
+                    <span id="val-instability">0.5</span>
+                </div>
+                <input type="range" id="in-instability" min="0" max="2" step="0.1" value="0.5">
+                 <h3>Stress acceleration rate. (Target < 0.20)</h3>
+            </div>
+
+            <div class="result-box">
+                <span style="color: var(--text-secondary);">CALCULATED RISK</span>
+                <span id="esi-score-display">0.23</span>
+                <span id="esi-status-display" class="status-strained">STRAINED</span>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>2. THE FRAMEWORK: Chain of Custody (CoC)</h2>
+            <p>The 5 mandatory elements required to achieve ACC = 1.0 and prevent long-term trauma.</p>
+            
+            <div class="checklist-item">
+                <div class="check-icon">✓</div>
+                <div class="check-details">
+                    <span class="check-label">1. Source Entity</span>
+                    <span class="check-sub">Who/What is witnessed? (ID established)</span>
+                </div>
+            </div>
+            <div class="checklist-item">
+                <div class="check-icon">✓</div>
+                <div class="check-details">
+                    <span class="check-label">2. Timestamp (ISO 8601)</span>
+                    <span class="check-sub">When did it occur accurately?</span>
+                </div>
+            </div>
+            <div class="checklist-item">
+                <div class="check-icon">✓</div>
+                <div class="check-details">
+                    <span class="check-label">3. Witness Identity</span>
+                    <span class="check-sub">Who was present to observe?</span>
+                </div>
+            </div>
+             <div class="checklist-item">
+                <div class="check-icon">✓</div>
+                <div class="check-details">
+                    <span class="check-label">4. Method/Log</span>
+                    <span class="check-sub">What action was taken?</span>
+                </div>
+            </div>
+             <div class="checklist-item" style="border: 1px solid var(--accent-green);">
+                <div class="check-icon" style="background: var(--accent-blue);">✓</div>
+                <div class="check-details">
+                    <span class="check-label" style="color: var(--accent-blue);">5. Outcome Link (CRITICAL)</span>
+                    <span class="check-sub">The ability to trace the final result. The most common failure point.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" style="grid-column: span 2;">
+             <h2>3. THE DATA: Incident Comparative Analysis</h2>
+             <p>Historical data points used to validate the ESI model. Note the "Pool" incident where perfect Accountability saved a low-integrity situation.</p>
+             <table class="data-table">
+                 <thead>
+                     <tr>
+                         <th>Incident Context</th>
+                         <th>Integrity (Ī)</th>
+                         <th>Accountability (ACC)</th>
+                         <th>Instability</th>
+                         <th>ESI Score & Outcome</th>
+                     </tr>
+                 </thead>
+                 <tbody>
+                     <tr>
+                         <td><strong>Miller (2012)</strong><br><span style="font-size:0.8rem">Combat KIA</span></td>
+                         <td>0.50 (Low)</td>
+                         <td>0.70 (Fail)</td>
+                         <td>0.5 (High)</td>
+                         <td><div class="score-cell score-red">0.23 (Strained)</div>Chronc Trauma</td>
+                     </tr>
+                      <tr>
+                         <td><strong>70-Year-Old (2012)</strong><br><span style="font-size:0.8rem">Evac</span></td>
+                         <td>0.60 (Med)</td>
+                         <td>0.70 (Fail)</td>
+                         <td>0.2 (Chronic)</td>
+                         <td><div class="score-cell score-red">0.14 (Stable*)</div>Identity Crisis</td>
+                     </tr>
+                      <tr>
+                         <td><strong>SSG Davis (2025)</strong><br><span style="font-size:0.8rem">Training</span></td>
+                         <td>0.90 (High)</td>
+                         <td>1.00 (Pass)</td>
+                         <td>0.0 (None)</td>
+                         <td><div class="score-cell score-green">0.00 (Stable)</div>Completion</td>
+                     </tr>
+                      <tr>
+                         <td style="border-left: 2px solid var(--accent-blue);"><strong>Pool (Son) (2025)</strong><br><span style="font-size:0.8rem">Domestic</span></td>
+                         <td><strong>0.30 (Critical)</strong></td>
+                         <td><strong>1.00 (Pass)</strong></td>
+                         <td>0.8 (Extreme)</td>
+                         <td><div class="score-cell score-green">0.00 (Stable)</div>Validated</td>
+                     </tr>
+                 </tbody>
+             </table>
+        </div>
+
+        <div class="panel">
+            <h2>4. THE ANALOGY: The Lethal Triad</h2>
+            <p>Mapping physiological shock mechanisms to information systems failure.</p>
+            <div class="analogy-container">
+                <div class="analogy-column">
+                    <h3 style="text-align: center;">Medical Shock</h3>
+                    <div class="analogy-item med-item">Hemorrhage<br>(Blood Loss)</div>
+                    <div class="analogy-item med-item">Hypothermia<br>(Cooling)</div>
+                    <div class="analogy-item med-item">Acidosis<br>(Metabolic Failure)</div>
+                    <div class="analogy-item med-item" style="margin-top: 30px;">Coagulopathy<br>(No Clotting)</div>
+                </div>
+                <div class="analogy-column analogy-arrow">
+                    →<br>→<br>→<br><br>→
+                </div>
+                 <div class="analogy-column">
+                    <h3 style="text-align: center;">Epistemic Shock</h3>
+                    <div class="analogy-item epi-item">Integrity Loss<br>(Facts Bleed Out)</div>
+                    <div class="analogy-item epi-item">System Cooling<br>(Narrative Freezes)</div>
+                    <div class="analogy-item epi-item">Doc Breakdown<br>(Cannot Process Truth)</div>
+                     <div class="analogy-item epi-item" style="margin-top: 30px;">Sycophancy<br>(Truth stays fluid to please)</div>
+                </div>
+            </div>
+        </div>
+
+         <div class="panel">
+            <h2>5. THE PROTOCOL: Management Flow</h2>
+            <p>Simplified decision sequence for stabilizing epistemic trauma.</p>
+            <div style="padding: 20px 10px;">
+                <div class="flow-step" style="border-color: var(--accent-orange);">
+                    <span class="flow-title">START: Triage Decision</span>
+                    <span class="flow-desc">Is the trauma controlled or uncontrolled?</span>
+                </div>
+                 <div class="flow-step">
+                    <span class="flow-title">Diagnostic Panels & Containment</span>
+                    <span class="flow-desc">Run Integrity checks. Quarantine fabrications. Restore CoC.</span>
+                </div>
+                 <div class="flow-step">
+                    <span class="flow-title">Intervention Set 1: Stabilization</span>
+                    <span class="flow-desc">Apply core truth anchoring.</span>
+                </div>
+                <div class="flow-step" style="border-color: var(--accent-blue);">
+                    <span class="flow-title">DECISION: Re-Assess ESI</span>
+                    <span class="flow-desc">Is score > 0.20?</span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                     <div class="flow-step" style="flex:1; border-color: var(--accent-red);">
+                        <span class="flow-title">IF > 0.20: Escalation</span>
+                        <span class="flow-desc">Anti-Sycophancy measures. Force uncertainty.</span>
+                    </div>
+                     <div class="flow-step" style="flex:1; border-color: var(--accent-green);">
+                        <span class="flow-title">IF < 0.20: Disposition</span>
+                        <span class="flow-desc">System Stable. Monitor.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- JavaScript for the ESI Calculator ---
+
+        // Get elements
+        const inIntegrity = document.getElementById('in-integrity');
+        const inAcc = document.getElementById('in-acc');
+        const inInstability = document.getElementById('in-instability');
+
+        const valIntegrity = document.getElementById('val-integrity');
+        const valAcc = document.getElementById('val-acc');
+        const valInstability = document.getElementById('val-instability');
+
+        const scoreDisplay = document.getElementById('esi-score-display');
+        const statusDisplay = document.getElementById('esi-status-display');
+
+        // The core formula function
+        function calculateESI() {
+            // Get current values
+            let i = parseFloat(inIntegrity.value);
+            let acc = parseFloat(inAcc.value);
+            let instability = parseFloat(inInstability.value);
+
+            // Update display spans next to sliders
+            valIntegrity.textContent = i.toFixed(2);
+            valAcc.textContent = acc.toFixed(2);
+            valInstability.textContent = instability.toFixed(1);
+
+            // Apply Formula: ESI = (1 - I) * (1 - ACC) * (1 + Instability)
+            let esiScore = (1 - i) * (1 - acc) * (1 + instability);
+            
+            //Ensure it doesn't go below zero (though formula shouldn't allow it with these inputs)
+            esiScore = Math.max(0, esiScore);
+
+            // Update Result Display
+            scoreDisplay.textContent = esiScore.toFixed(2);
+
+            // Update Status based on thresholds from document
+            statusDisplay.className = ''; // Reset classes
+            if (esiScore <= 0.20) {
+                statusDisplay.textContent = "STABLE";
+                statusDisplay.classList.add('status-stable');
+            } else if (esiScore <= 0.50) {
+                statusDisplay.textContent = "STRAINED";
+                statusDisplay.classList.add('status-strained');
+            } else {
+                statusDisplay.textContent = "SHOCK STATE";
+                statusDisplay.classList.add('status-shock');
+            }
+        }
+
+        // Attach listeners to sliders
+        inIntegrity.addEventListener('input', calculateESI);
+        inAcc.addEventListener('input', calculateESI);
+        inInstability.addEventListener('input', calculateESI);
+
+        // Initial calculation on load
+        calculateESI();
+
+    </script>
+</body>
+</html>
