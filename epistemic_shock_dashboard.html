@@ -21,6 +21,47 @@
             background-color: var(--bg-dark);
             color: var(--text-primary);
             margin: 0;
+            padding: 0;
+        }
+
+        /* Navigation Header */
+        .nav-header {
+            background: rgba(15, 30, 50, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(100, 200, 255, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .nav-logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--accent-blue);
+        }
+
+        .content-wrapper {
             padding: 20px;
         }
 
@@ -133,6 +174,20 @@
     </style>
 </head>
 <body>
+    <!-- Navigation Header -->
+    <div class="nav-header">
+        <div class="nav-logo">
+            <span style="font-size: 1.5rem;">⟡</span>
+            <span>Testimonial Completion</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="epistemic_shock_dashboard.html" class="active">ESI Dashboard</a>
+            <a href="sacred_witness_engine.html">SW Engine</a>
+            <a href="swa_dashboard.html">SWA Dashboard</a>
+        </div>
+    </div>
+    <div class="content-wrapper">
 
     <h1>DOC ANALYTICS: Epistemic Shock & Reciprocity Loop</h1>
 
@@ -383,5 +438,6 @@
         calculateESI();
 
     </script>
+    </div>
 </body>
 </html>

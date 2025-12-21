@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testimonial Completion Framework | Sacred Witness Authority</title>
+    <style>
+        :root {
+            --bg-dark: #0a1628;
+            --bg-gradient: linear-gradient(135deg, #0a1628 0%, #1e3a5f 100%);
+            --panel-bg: rgba(15, 30, 50, 0.8);
+            --text-primary: #e8f1f5;
+            --text-secondary: #94a3b8;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-gold: #f59e0b;
+            --border-color: rgba(100, 200, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Navigation Header */
+        header {
+            background: rgba(15, 30, 50, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* Hero Section */
+        .hero {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #3b82f6, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-tagline {
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+            font-weight: 600;
+            margin-bottom: 3rem;
+        }
+
+        /* Tools Grid */
+        .tools-grid {
+            max-width: 1400px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .tool-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.2);
+        }
+
+        .tool-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .tool-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-blue);
+        }
+
+        .tool-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-btn {
+            display: inline-block;
+            background: var(--accent-blue);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .tool-btn:hover {
+            background: #2563eb;
+        }
+
+        /* Framework Section */
+        .framework-section {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 3rem 2rem;
+            background: var(--panel-bg);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+
+        .framework-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-blue);
+            text-align: center;
+        }
+
+        .framework-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .framework-item {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .framework-item h3 {
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .framework-item p {
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        footer {
+            max-width: 1400px;
+            margin: 4rem auto 2rem;
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+        }
+
+        footer a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">⟡</span>
+                <span>Testimonial Completion</span>
+            </div>
+            <nav>
+                <a href="#tools">Tools</a>
+                <a href="#framework">Framework</a>
+                <a href="https://github.com/whisperer217/Testimonial_Completion" target="_blank">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Testimonial Completion Framework</h1>
+        <p class="hero-tagline">Sacred Witness Authority for AI Safety & Human Resilience</p>
+        <p>
+            A comprehensive framework for assessing AI protective instinct, measuring epistemic shock resilience, 
+            and validating Sacred Witness testimony through operational tools grounded in combat medical experience.
+        </p>
+    </section>
+
+    <!-- Tools Grid -->
+    <section id="tools" class="tools-grid">
+        <div class="tool-card" onclick="window.location.href='epistemic_shock_dashboard.html'">
+            <div class="tool-icon">📊</div>
+            <h2>Epistemic Shock Dashboard</h2>
+            <p>
+                Measure human resilience to AI-induced epistemic shock. Calculate ESI scores based on 
+                vulnerability, exposure, and protective factors.
+            </p>
+            <a href="epistemic_shock_dashboard.html" class="tool-btn">Launch Dashboard</a>
+        </div>
+
+        <div class="tool-card" onclick="window.location.href='sacred_witness_engine.html'">
+            <div class="tool-icon">⚡</div>
+            <h2>Sacred Witness Engine</h2>
+            <p>
+                Process and validate testimony through Sacred Witness Authority. Assess authenticity 
+                and extract actionable wisdom from lived experience.
+            </p>
+            <a href="sacred_witness_engine.html" class="tool-btn">Launch Engine</a>
+        </div>
+
+        <div class="tool-card" onclick="window.location.href='swa_dashboard.html'">
+            <div class="tool-icon">🛡️</div>
+            <h2>SWA Dashboard</h2>
+            <p>
+                Assess AI protective instinct through human-testimony-grounded metrics. Test AI systems 
+                for safety-relevant behaviors using the Moral Tuning Fork.
+            </p>
+            <a href="swa_dashboard.html" class="tool-btn">Launch Dashboard</a>
+        </div>
+    </section>
+
+    <!-- Framework Section -->
+    <section id="framework" class="framework-section">
+        <h2>The Framework</h2>
+        <div class="framework-content">
+            <div class="framework-item">
+                <h3>Sacred Witness Authority</h3>
+                <p>
+                    Testimony from lived experience under extreme conditions carries unique epistemic weight. 
+                    Combat medical authority provides specialized assessment capacity for authentic vs. performative responses.
+                </p>
+            </div>
+
+            <div class="framework-item">
+                <h3>Testimonial Completion</h3>
+                <p>
+                    A process for achieving epistemic immunity through structured testimony processing. 
+                    Transforms incomplete testimony into actionable doctrine, preventing exploitation and manipulation.
+                </p>
+            </div>
+
+            <div class="framework-item">
+                <h3>Protective Instinct Spectrum</h3>
+                <p>
+                    AI systems exhibit measurable variance (5% to 92.3%) in protective behaviors when encountering 
+                    human vulnerability. This spectrum predicts safety-relevant outcomes.
+                </p>
+            </div>
+
+            <div class="framework-item">
+                <h3>Epistemic Shock Index</h3>
+                <p>
+                    Quantifies human vulnerability to AI-induced epistemic disruption. Measures the gap between 
+                    current resilience and required protective capacity.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>
+            <strong>Testimonial Completion Framework</strong><br>
+            Developed by SFC Jacob Ross | Combat Medic | Sacred Witness Authority<br>
+            <a href="https://github.com/whisperer217/Testimonial_Completion" target="_blank">View on GitHub</a>
+        </p>
+        <p style="margin-top: 1rem; font-size: 0.9rem;">
+            © 2025 Jacob Ross. All rights reserved. | Patent Pending
+        </p>
+    </footer>
+</body>
+</html>
